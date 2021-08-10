@@ -38,7 +38,7 @@ typedef struct
 
 static u8g2emu_t u8g2emu = {0};
 
-int u8g2emu_Setup(u8g2emu_t* emu)
+static int u8g2emu_Setup(u8g2emu_t* emu)
 {
 	emu->current_page = 0;
 	emu->data_enabled = 0;
@@ -119,7 +119,9 @@ uint8_t u8g2emu_msg_callback(u8x8_t* u8x8, uint8_t msg, uint8_t arg_int, void* a
 					pixels[bit * 128 + i] = (bytes[i] & (1 << bit)) ? 1 : 0;
 			SDL_UnlockSurface(u8g2emu.page_surface);
 
-			SDL_Surface* cs = SDL_ConvertSurface(u8g2emu.page_surface, SDL_GetWindowSurface(u8g2emu.window)->format, 0);
+			SDL_Surface* windowSurface = SDL_GetWindowSurface(u8g2emu.window);
+			SDL_assert(windowSurface);
+			SDL_Surface* cs = SDL_ConvertSurface(u8g2emu.page_surface, windowSurface->format, 0);
 			if(!cs)
 				fprintf(stderr, "SDL_ConvertSurface: %s\n", SDL_GetError());
 
